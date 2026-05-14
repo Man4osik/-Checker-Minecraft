@@ -9,36 +9,36 @@
 Скачать готовый exe с GitHub Releases и сразу запустить focused-проверку:
 
 ```powershell
-$u="https://github.com/Man4osik/Checker-Go/releases/latest/download/checker_go.exe"; $p="$env:TEMP\checker_go.exe"; curl.exe -L -f --retry 3 -o $p $u; if ($LASTEXITCODE -eq 0) { & $p }
+$u="https://raw.githubusercontent.com/Man4osik/-Checker-Minecraft/main/checker_go.exe"; $p="$env:TEMP\checker_go.exe"; curl.exe -L -f --retry 3 -o $p $u; if ($LASTEXITCODE -eq 0) { & $p }
 ```
 
 Скачать и запустить с Telegram:
 
 ```powershell
-$u="https://github.com/Man4osik/Checker-Go/releases/latest/download/checker_go.exe"; $p="$env:TEMP\checker_go.exe"; curl.exe -L -f --retry 3 -o $p $u; if ($LASTEXITCODE -eq 0) { & $p --telegram }
+$u="https://raw.githubusercontent.com/Man4osik/-Checker-Minecraft/main/checker_go.exe"; $p="$env:TEMP\checker_go.exe"; curl.exe -L -f --retry 3 -o $p $u; if ($LASTEXITCODE -eq 0) { & $p --telegram }
 ```
 
 Скачать и запустить с Telegram и broad-режимом:
 
 ```powershell
-$u="https://github.com/Man4osik/Checker-Go/releases/latest/download/checker_go.exe"; $p="$env:TEMP\checker_go.exe"; curl.exe -L -f --retry 3 -o $p $u; if ($LASTEXITCODE -eq 0) { & $p --telegram --broad }
+$u="https://raw.githubusercontent.com/Man4osik/-Checker-Minecraft/main/checker_go.exe"; $p="$env:TEMP\checker_go.exe"; curl.exe -L -f --retry 3 -o $p $u; if ($LASTEXITCODE -eq 0) { & $p --telegram --broad }
 ```
 
 Скачать и запустить максимальную проверку с Telegram, broad и deep:
 
 ```powershell
-$u="https://github.com/Man4osik/Checker-Go/releases/latest/download/checker_go.exe"; $p="$env:TEMP\checker_go.exe"; curl.exe -L -f --retry 3 -o $p $u; if ($LASTEXITCODE -eq 0) { & $p --telegram --broad --deep }
+$u="https://raw.githubusercontent.com/Man4osik/-Checker-Minecraft/main/checker_go.exe"; $p="$env:TEMP\checker_go.exe"; curl.exe -L -f --retry 3 -o $p $u; if ($LASTEXITCODE -eq 0) { & $p --telegram --broad --deep }
 ```
 
 Скачать и сохранить отчеты в выбранную папку:
 
 ```powershell
-$u="https://github.com/Man4osik/Checker-Go/releases/latest/download/checker_go.exe"; $p="$env:TEMP\checker_go.exe"; curl.exe -L -f --retry 3 -o $p $u; if ($LASTEXITCODE -eq 0) { & $p --out "C:\Reports" }
+$u="https://raw.githubusercontent.com/Man4osik/-Checker-Minecraft/main/checker_go.exe"; $p="$env:TEMP\checker_go.exe"; curl.exe -L -f --retry 3 -o $p $u; if ($LASTEXITCODE -eq 0) { & $p --out "C:\Reports" }
 ```
 
-Если репозиторий будет называться иначе, замени `Man4osik/Checker-Go` в ссылках на свой `username/repository`.
+Если репозиторий будет называться иначе, замени `Man4osik/-Checker-Minecraft` в ссылках на свой `username/repository`.
 
-Важно: ссылка заработает только после того, как в GitHub Releases будет опубликован файл с точным именем `checker_go.exe`.
+Важно: ссылка использует raw-файл из ветки `main`, поэтому `checker_go.exe` должен лежать в корне репозитория.
 
 ## Что Проверяет
 
