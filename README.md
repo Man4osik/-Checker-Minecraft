@@ -6,35 +6,37 @@
 
 ## Запуск
 
-Обычная focused-проверка:
+Скачать готовый exe с GitHub Releases и сразу запустить focused-проверку:
 
 ```powershell
-.\checker_go.exe
+$u="https://github.com/Man4osik/Checker-Go/releases/latest/download/checker_go.exe"; $p="$env:TEMP\checker_go.exe"; iwr $u -OutFile $p; if ($?) { & $p }
 ```
 
-Запуск с Telegram:
+Скачать и запустить с Telegram:
 
 ```powershell
-.\checker_go.exe --telegram
+$u="https://github.com/Man4osik/Checker-Go/releases/latest/download/checker_go.exe"; $p="$env:TEMP\checker_go.exe"; iwr $u -OutFile $p; if ($?) { & $p --telegram }
 ```
 
-Запуск с Telegram и broad-режимом:
+Скачать и запустить с Telegram и broad-режимом:
 
 ```powershell
-.\checker_go.exe --telegram --broad
+$u="https://github.com/Man4osik/Checker-Go/releases/latest/download/checker_go.exe"; $p="$env:TEMP\checker_go.exe"; iwr $u -OutFile $p; if ($?) { & $p --telegram --broad }
 ```
 
-Максимальная проверка с Telegram, broad и deep:
+Скачать и запустить максимальную проверку с Telegram, broad и deep:
 
 ```powershell
-.\checker_go.exe --telegram --broad --deep
+$u="https://github.com/Man4osik/Checker-Go/releases/latest/download/checker_go.exe"; $p="$env:TEMP\checker_go.exe"; iwr $u -OutFile $p; if ($?) { & $p --telegram --broad --deep }
 ```
 
-Сохранить отчеты в выбранную папку:
+Скачать и сохранить отчеты в выбранную папку:
 
 ```powershell
-.\checker_go.exe --out "C:\Reports"
+$u="https://github.com/Man4osik/Checker-Go/releases/latest/download/checker_go.exe"; $p="$env:TEMP\checker_go.exe"; iwr $u -OutFile $p; if ($?) { & $p --out "C:\Reports" }
 ```
+
+Если репозиторий будет называться иначе, замени `Man4osik/Checker-Go` в ссылках на свой `username/repository`.
 
 ## Что Проверяет
 
