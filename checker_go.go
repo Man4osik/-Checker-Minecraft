@@ -28,6 +28,7 @@ type config struct {
 	broad    bool
 	deep     bool
 	jsonOut  bool
+	selfDel  bool
 	outDir   string
 	days     int
 	maxFiles int
@@ -59,33 +60,312 @@ var seedIndicators = []string{
 	"Nodus", "Jigsaw", "BleachHack", "ThunderHack", "Konas", "Vape", "Raven", "Drip", "Entropy", "Whiteout", "Novoline", "Astolfo", "Rise", "Tenacity",
 	"Zeroday", "Exhibition", "Augustus", "FDP", "NightX", "Azura", "Horion", "Toolbox", "Zephyr", "PacketClient", "Aoba", "JexClient", "Catalyst", "Baritone",
 	"FreeCam", "KillAura", "AutoClicker", "Triggerbot", "Aimbot", "ChestESP", "StorageESP", "PlayerESP", "Xray", "X-Ray", "NoRender", "NoKnockBack",
+	"ElytraSwap", "Elytra Swap", "Elytra-Swap", "Elytra_Swap", "ElytraSwapper", "Elytra Swapper", "Elytra-Swapper", "Elytra_Swapper", "ElytraSwapMod", "Elytra Swap Mod", "AutoElytra", "Auto Elytra", "ElytraSwitcher", "Elytra Switcher", "ChestplateSwap", "Chestplate Swap", "ChestplateSwapper", "Chestplate Swapper", "ArmorSwap", "Armor Swap", "ArmorSwapper", "Armor Swapper",
+	"TotemSwap", "Totem Swap", "TotemSwapper", "TotemSwaper", "Totem Swapper", "AutoTotem", "Auto Totem", "InventoryTotem", "SwitchTotems", "Switch Totems", "Offhand", "OffhandSwap", "Offhand Swap", "OffhandSwapper", "Offhand Swapper",
+	"AutoCrystal", "Auto Crystal", "CrystalAura", "Crystal Aura", "AnchorAura", "Anchor Aura", "AutoAnchor", "Auto Anchor", "AutoPearl", "Auto Pearl", "ClickPearl", "Click Pearl",
 	"Celestial", "Nursultan", "Wexside", "Minced", "Akrien", "DeadCode", "Expensive", "Excellent", "Venus", "Haruka", "Britva", "Delta", "Verist", "Fluger", "Catlavan",
 	"RastyClient", "Nurik", "Matix", "GishCode", "Zamorozka", "NeverHook", "Neverware", "Haven", "Ponos", "EmortalityClient", "Dreampool", "Invisible", "ToffiClient",
 	"QuickClient", "EnergyClient", "Cortex", "Interium", "ExLoader", "Exloader", "Injector", "Xenos", "AmbientInjector", "LiquidLoader", "BootJect",
 	"rename_me_please.dll", "EdItMe.dll", "mc100.dll", ".vape", ".wex", ".akr", ".bush", "sing-box", "sing-box.exe", "xray.exe", "xray-core", "v2ray", "clash", "nekoray", "hiddify",
 	"Badlion", "Lunar", "Feather", "TLauncher", "MultiMC", "PrismLauncher", "ElyPrismLauncher", "ForgeHax", "ForgeWurst", "LabyMod", "CheatBreaker", "PvPLounge", "SkidClient",
 	"Flux", "Skid", "Abyss", "LavaHack", "MoonWare", "MoonProject", "NewLight", "Rassvet", "NightMare", "Summit", "Ferox", "Cherry", "WintWare", "Norules", "Eternity", "ArchWare",
-	"BebraWare", "NightProject", "XONE", "VenusFree", "Ezka", "FanArme", "Nuclear", "Meow", "Avalone", "MERCU", "NIOBIUM", "Kion", "BoberWare", "Bushroot", "PanicAttack", "PanickAttack",
+	"BebraWare", "NightProject", "XONE", "VenusFree", "Ezka", "FanArme", "Nuclear", "NuClear", "Meow", "Avalone", "MERCU", "NIOBIUM", "Kion", "BoberWare", "Bushroot", "PanicAttack", "PanickAttack",
 	"HackBrand", "ShitBeta", "Troxill", "ExosWare", "ExtendoPVP", "HaramBaritone", "FLAUNCHER", "ClownClient", "EuphoriaClient", "VertClient", "WortexClient", "MioClient", "Vegaline", "EvaWare",
 	"ViaMCP", "HWID", "HitWare", "Aurus", "Neverclide", "AdvancedX", "WeepCraft", "Kalkon", "DreampoolHack", "DiamondSim", "Kyprak", "Caesar", "ChClient", "cClient", "CClient",
-	"CortexClient", "cortexclient", "cortexclient.com", "Akrien.wtf", "ammit.cc", "vape.gg", "deadcodehack.org", "nursultan.fun", "clowdy.space", "expensiveclient.xyz", "dreampoolhack.ru", "drip.gg",
+	"CortexClient", "Sk3dGuard", "cortexclient", "cortexclient.com", "Akrien.wtf", "ammit.cc", "vape.gg", "deadcodehack.org", "nursultan.fun", "clowdy.space", "expensiveclient.xyz", "dreampoolhack.ru", "drip.gg",
 	".wtf", ".gg", ".space", "zware", "PojavLauncher", "Astoria", "Taker", "Chameleon", "Ocean", "Echo-tool", "EchoTool", "RegScanner", "USBDeview", "RecentFilesView",
+	// Additional cheat clients/modules
+	"LambdaHack", "Lambda", "Huzuni", "HuzuniClient", "Fanta", "FantaClient", "Moneymod", "MoneyMod",
+	"Reach", "ReachHack", "ReachModule", "Anticheat", "AntiCheat", "AntiCheatReborn", "ACR",
+	"BrusliK", "Bruslik", "LordCheat", "LordCheatClient", "Hapu", "HapuClient",
+	"Champ", "ChampClient", "NFC", "NFCClient", "Hydra", "HydraClient", "Phantom", "PhantomClient",
+	"Spooky", "SpookyClient", "SpookyHack", "Jello", "JelloClient", "Diablo", "DiabloClient",
+	"Prestige", "PrestigeClient", "Ryu", "RyuClient", "ProHacker", "ProHackerClient",
+	"Soar", "SoarClient", "SoarHack", "Crystallix", "Tokaido", "TokaidoClient",
+	"Zane", "ZaneClient", "ZaneHack", "RedeSky", "Redesky", "Reze", "RezeClient",
+	"Blizzard", "BlizzardClient", "Strex86", "Strex", "Kuriyama", "KuriyamaClient",
+	"SendHook", "SendHookClient", "UltraClient", "MegaClient", "MaxClient", "BestClient",
+	"Widescreen", "WidescreenClient", "Atani", "AtaniClient", "Nightly", "NightlyClient",
+	"Yolanda", "YolandaClient", "Cursed", "CursedClient", "MineHack", "MineHackClient",
+	"Neon", "NeonClient", "NeonHack", "Koks", "KoksClient",
+	"Maf", "MafClient", "MafHack", "PWN", "PWNClient", "PWNHack",
+	"PrestigeClient", "Sensation", "SensationClient", "Passion", "PassionClient",
+	"Eject", "EjectClient", "EjectHack", "Coffee", "CoffeeClient", "CoffeeHack",
+	"MahMeoul", "Meoul", "Insanity", "InsanityClient",
+	"Ignite", "IgniteClient", "IgniteHack", "Define", "DefineClient",
+	"Nightfall", "NightfallClient", "Vanity", "VanityClient", "Cherish", "CherishClient",
+	"Cobalt", "CobaltClient", "CobaltHack", "Equinox", "EquinoxClient",
+	// Russian cheat clients
+	"Zapret", "ZapretClient", "Raketa", "RaketaClient", "RaketaHack",
+	"Pchelin", "PchelinClient", "Sosiska", "SosiskaClient", "SosiskaHack",
+	"Shlepa", "ShlepaClient", "ShlepaHack", "Bublik", "BublikClient",
+	"GovnoClient", "GovnoHack", "Pivo", "PivoClient",
+	"Vodka", "VodkaClient", "CCCP", "CCCPClient", "USSR", "USSRClient",
+	"GRU", "GRUClient", "FSB", "FSBClient", "KGB", "KGBClient",
+	"ZOV", "ZOVClient", "ZOVHack", "SVO", "SVOClient",
+	// More known clients
+	"Vega", "VegaClient", "VegaHack", "Toxic", "ToxicClient", "ToxicHack",
+	"RageClient", "RageHack", "HackClient", "CheatClient", "ClientHack",
+	"R3D", "R3DClient", "R3DHack", "Zanar", "ZanarClient",
+	"Pandora", "PandoraClient", "PandoraHack", "Krypton", "KryptonClient",
+	"Atlas", "AtlasClient", "AtlasHack", "Origin", "OriginClient",
+	"Envy", "EnvyClient", "EnvyHack", "Reaper", "ReaperClient", "ReaperHack",
+	"Spigot", "SpigotClient", "SpigotHack", "Melon", "MelonClient",
+	"Exter", "ExterClient", "ExterHack", "Mint", "MintClient", "MintHack",
+	"Purpur", "PurpurClient", "Endless", "EndlessClient",
+	"Dortware", "DortwareClient", "MioHack", "Mio",
+	"Senura", "SenuraClient", "Kose", "KoseClient", "KoseHack",
+	"Eblow", "EblowClient", "EblowHack", "Trouble", "TroubleClient",
+	"RageQuit", "RageQuitClient", "Focus", "FocusClient",
+	"Alpha", "AlphaClient", "AlphaHack", "Omega", "OmegaClient", "OmegaHack",
+	"Spray", "SprayClient", "SprayHack", "Nemo", "NemoClient",
+	"Loon", "LoonClient", "LoonHack", "LoonProject", "Fox", "FoxClient",
 }
 
 var broadIndicators = []string{
-	"404", "rich", "wild", "external", "simply", "kotlin", "moon", "fly", "flight", "sprint", "trident", "potions", "loader", "client", "skill", "winner", "diamond",
-	"invisible", "energy", "destroy", "rage", "free", "neat", "abyss", "ares", "blackberry", "catalyst", "cherry", "delta", "drip", "lava", "metro", "luna",
-	"jessica", "jessia", "excellent", "future", "impact", "hitbox", "infinity", "jelly", "jigsaw", "nametags", "autofish", "autoeat", "autotool", "autototem",
-	"autoarmour", "autoattack", "autoclicker", "chestesp", "storageesp", "playeresp", "nopush", "jesus", "killaura", "triggerbot", "aimbot", "scaffold", "x-ray",
-	"raven", "rockstar", "sigma", "zeus", "paragon", "thunder", "wave", "squad", "waterclient", "darkproject", "darklight", "decision", "bleach", "hider",
-	"recode", "fatal", "spider", "xray", "dll", "exe", "config", "microsoft-", "rise", "meow", "cortex",
+	"404", "kotlin", "skill", "winner",
+	"autofish", "autoeat", "autotool", "autoarmour", "autoattack", "autoclicker",
+	"chestesp", "storageesp", "playeresp", "nopush", "jesus", "scaffold",
+	"waterclient", "darkproject", "darklight", "decision", "hider", "recode", "fatal",
+	"blackberry", "luna", "jessica", "jessia", "excellent", "paragon", "rockstar", "zeus",
+	"xray", "dll", "exe", "config",
 }
 
-var weakIndicators = makeSet([]string{"impact", "future", "fly", "flight", "rise", "delta", "freecam", "xray", "x-ray", "esp", "hitbox", "client", "loader", "cheat", "meow", "cortex", "lunar", "feather", "badlion", "tlauncher", "prismlauncher", "elyprismlauncher", "entropy", "toolbox", "regscanner", "usbdeview", "recentfilesview"})
-var highIndicators = makeSet([]string{"vape", "minced", "catlavan", "nursultan", "wexside", "akrien", "deadcode", "expensive", "celestial", "venus", "raven", "drip", "whiteout", "novoline", "astolfo", "tenacity", "zeroday", "exloader", "xenos", "ambientinjector", "liquidloader", "bootject", "rename_me_please.dll", "editme.dll", "mc100.dll", ".vape", ".wex", ".akr", ".bush", "vape.gg", "deadcodehack.org", "nursultan.fun", "expensiveclient.xyz", "dreampoolhack.ru", "drip.gg"})
+var weakIndicators = makeSet([]string{
+	"impact", "future", "fly", "flight", "rise", "delta", "freecam",
+	"xray", "x-ray", "esp", "hitbox", "client", "loader", "cheat",
+	"meow", "cortex", "lunar", "feather", "badlion", "tlauncher",
+	"prismlauncher", "elyprismlauncher", "entropy", "toolbox",
+	"regscanner", "usbdeview", "recentfilesview",
+	"cherry", "diamond", "spider", "trident", "potions", "moon",
+	"invisible", "free", "energy", "destroy", "rich", "wild",
+	"simply", "external", "wave", "thunder", "jelly", "infinity",
+	"sprint", "neat", "abyss", "bleach", "norender", "autototem",
+	"offhand", "killaura", "triggerbot", "aimbot", "nametags",
+	"autofish", "autoeat", "autotool", "autoarmour", "autoattack", "autoclicker",
+	"chestesp", "storageesp", "playeresp", "nopush", "jesus", "scaffold",
+})
+
+var highIndicators = makeSet([]string{
+	"vape", "minced", "catlavan", "nursultan", "wexside", "akrien",
+	"deadcode", "expensive", "celestial", "venus", "raven", "drip",
+	"whiteout", "novoline", "astolfo", "tenacity", "zeroday",
+	"exloader", "xenos", "ambientinjector", "liquidloader", "bootject",
+	"rename_me_please.dll", "editme.dll", "mc100.dll",
+	".vape", ".wex", ".akr", ".bush",
+	"vape.gg", "deadcodehack.org", "nursultan.fun",
+	"expensiveclient.xyz", "dreampoolhack.ru", "drip.gg",
+	"nuclear", "nuclear",
+})
+
+var ignoredIndicators = makeSet([]string{
+	"labymod", "lunar", "regscanner", "tlauncher",
+	"kotlin", "lava", "metro", "elyprismlauncher", "ocean", "neat", "luna",
+	"exe", "dll", "config", "404", "skill", "winner",
+})
+
 var riskyExt = makeSet([]string{".exe", ".jar", ".dll", ".zip", ".rar", ".7z"})
 var textExt = makeSet([]string{".log", ".txt", ".json", ".cfg", ".toml", ".yml", ".yaml", ".properties", ".ini"})
 var scanExt = makeSet([]string{".exe", ".jar", ".dll", ".zip", ".rar", ".7z", ".json", ".cfg", ".toml", ".txt", ".log", ".ini"})
+
+var cheatProcessNames = makeSet([]string{
+	"energyclient.exe", "energyclient",
+	"catlavan.exe", "catlavan",
+	"nursultan.exe", "nursultan",
+	"wexside.exe", "wexside",
+	"nuclear.exe", "nuclear", "nucl3ar.exe",
+	"minced.exe", "minced",
+	"akrien.exe", "akrien",
+	"deadcode.exe", "deadcode",
+	"expensive.exe", "expensive",
+	"celestial.exe", "celestial",
+	"venus.exe", "venus",
+	"haruka.exe", "haruka",
+	"britva.exe", "britva",
+	"delta.exe", "delta",
+	"verist.exe", "verist",
+	"fluger.exe", "fluger",
+	"rastyclient.exe", "rastyclient",
+	"nurik.exe", "nurik",
+	"matix.exe", "matix",
+	"exloader.exe", "exloader",
+	"xenos.exe", "xenos",
+	"ambientinjector.exe", "ambientinjector",
+	"liquidloader.exe", "liquidloader",
+	"bootject.exe", "bootject",
+	"injector.exe", "injector",
+	"vape.exe", "vape",
+	"vape.gg",
+	"xray.exe",
+	"sing-box.exe",
+	"horion.exe", "horion",
+	"toolbox.exe", "toolbox",
+	"zephyr.exe", "zephyr",
+	"cortex.exe",
+	"interium.exe", "interium",
+	"quickclient.exe",
+	"wurst.exe", "wurst",
+	"meteor.exe", "meteor",
+	"liquidbounce.exe", "liquidbounce",
+	"sigma.exe", "sigma",
+	"impact.exe", "impact",
+	"future.exe", "future",
+	"aristois.exe", "aristois",
+	"inertia.exe", "inertia",
+	"bleachhack.exe", "bleachhack",
+	"thunderhack.exe", "thunderhack",
+	"konas.exe", "konas",
+	"raven.exe", "raven",
+	"drip.exe", "drip",
+	"entropy.exe", "entropy",
+	"whiteout.exe", "whiteout",
+	"novoline.exe", "novoline",
+	"astolfo.exe", "astolfo",
+	"tenacity.exe", "tenacity",
+	"exhibition.exe", "exhibition",
+	"augustus.exe", "augustus",
+	"fdp.exe", "fdpclient",
+	"nightx.exe", "nightx",
+	"azura.exe", "azura",
+	"zeroday.exe", "zeroday",
+	"aoba.exe", "aoba",
+	"jexclient.exe", "jexclient",
+	"catalyst.exe", "catalyst",
+	"forgebax.exe", "forgehax",
+	"forgewurst.exe", "forgewurst",
+	"dreampool.exe", "dreampool",
+	"tofficlient.exe", "tofficlient",
+	"ponos.exe", "ponos",
+	"habibimodanalyzer.exe", "habibimodanalyzer",
+	"redlotus.exe", "redlotus",
+	"doomsday.exe", "doomsdaydetector", "doomsdayfinder",
+	"zamorozka.exe", "zamorozka",
+	"neverhook.exe", "neverhook",
+	"neverware.exe", "neverware",
+	"nightmare.exe", "nightmare",
+	"summit.exe", "summit",
+	"ferox.exe", "ferox",
+	"cherry.exe",
+	"wintware.exe", "wintware",
+	"norules.exe", "norules",
+	"eternity.exe", "eternity",
+	"archware.exe", "archware",
+	"bebraware.exe", "bebraware",
+	"nightproject.exe", "nightproject",
+	"xone.exe", "xone",
+	"venusfree.exe", "venusfree",
+	"fanarme.exe", "fanarme",
+	"avalone.exe", "avalone",
+	"mercu.exe", "mercu",
+	"niobium.exe", "niobium",
+	"kion.exe", "kion",
+	"boberware.exe", "boberware",
+	"bushroot.exe", "bushroot",
+	"panicattack.exe", "panickattack",
+	"hackbrand.exe", "hackbrand",
+	"shibeta.exe", "shitbeta",
+	"troxill.exe", "troxill",
+	"exosware.exe", "exosware",
+	"extendopvp.exe", "extendopvp",
+	"harambaritone.exe", "harambaritone",
+	"flauncher.exe", "flauncher",
+	"clownclient.exe", "clownclient",
+	"euphoriaclient.exe", "euphoriaclient",
+	"vertclient.exe", "vertclient",
+	"wortexclient.exe", "wortexclient",
+	"mioclient.exe", "mioclient",
+	"vegaline.exe", "vegaline",
+	"evaware.exe", "evaware",
+	"astoria.exe", "astoria",
+	"taker.exe", "taker",
+	"chameleon.exe", "chameleon",
+	"echo-tool.exe", "echotool",
+	"lambda.exe", "lambdahack.exe",
+	"huzuni.exe", "huzuniclient.exe",
+	"fanta.exe", "fantaclient.exe",
+	"moneymod.exe", "moneymodclient.exe",
+	"bruslik.exe", "bruslikclient.exe",
+	"lordcheat.exe", "lordcheatclient.exe",
+	"hapu.exe", "hapuclient.exe",
+	"champ.exe", "champclient.exe",
+	"nfc.exe", "nfcclient.exe",
+	"hydra.exe", "hydraclient.exe",
+	"phantom.exe", "phantomclient.exe",
+	"spooky.exe", "spookyclient.exe",
+	"jello.exe", "jelloclient.exe",
+	"diablo.exe", "diabloclient.exe",
+	"prestige.exe", "prestigeclient.exe",
+	"ryu.exe", "ryuclient.exe",
+	"prohacker.exe", "prohackerclient.exe",
+	"soar.exe", "soarclient.exe",
+	"tokaido.exe", "tokaidoclient.exe",
+	"rede.exe", "redesky.exe",
+	"blizzard.exe", "blizzardclient.exe",
+	"strex86.exe", "strex.exe",
+	"kuriyama.exe", "kuriyamaclient.exe",
+	"sendhook.exe", "sendhookclient.exe",
+	"ultraclient.exe", "megaclient.exe", "maxclient.exe",
+	"widescreen.exe", "widescreenclient.exe",
+	"atani.exe", "ataniclient.exe",
+	"yolanda.exe", "yolandaclient.exe",
+	"cursed.exe", "cursedclient.exe",
+	"minehack.exe", "minehackclient.exe",
+	"neon.exe", "neonclient.exe",
+	"koks.exe", "koksclient.exe",
+	"maf.exe", "mafclient.exe",
+	"pwn.exe", "pwnclient.exe",
+	"sensation.exe", "sensationclient.exe",
+	"passion.exe", "passionclient.exe",
+	"eject.exe", "ejectclient.exe",
+	"coffee.exe", "coffeeclient.exe",
+	"mahmeoul.exe", "meoul.exe",
+	"insanity.exe", "insanityclient.exe",
+	"ignite.exe", "igniteclient.exe",
+	"define.exe", "defineclient.exe",
+	"nightfall.exe", "nightfallclient.exe",
+	"vanity.exe", "vanityclient.exe",
+	"cherish.exe", "cherishclient.exe",
+	"cobalt.exe", "cobaltclient.exe",
+	"equinox.exe", "equinoxclient.exe",
+	"zapret.exe", "zapretclient.exe",
+	"raketa.exe", "raketaclient.exe",
+	"shlepa.exe", "shlepa.exe", "shlepaclient.exe",
+	"bublik.exe", "bublikclient.exe",
+	"govnoclient.exe",
+	"vega.exe", "vegaclient.exe",
+	"toxic.exe", "toxicclient.exe",
+	"rageclient.exe", "ragehack.exe",
+	"hackclient.exe", "cheatclient.exe",
+	"zanar.exe", "zanarclient.exe",
+	"pandora.exe", "pandoraclient.exe",
+	"krypton.exe", "kryptonclient.exe",
+	"atlas.exe", "atlasclient.exe",
+	"origin.exe", "originclient.exe",
+	"envy.exe", "envyclient.exe",
+	"reaper.exe", "reaperclient.exe",
+	"exter.exe", "exterclient.exe",
+	"mint.exe", "mintclient.exe",
+	"purpur.exe", "purpurclient.exe",
+	"endless.exe", "endlessclient.exe",
+	"dortware.exe", "dortwareclient.exe",
+	"senura.exe", "senuraclient.exe",
+	"kose.exe", "koseclient.exe",
+	"alpha.exe", "alphaclient.exe",
+	"omega.exe", "omegaclient.exe",
+	"spray.exe", "sprayclient.exe",
+	"fox.exe", "foxclient.exe",
+})
+
+var cheatDataDirs = []string{
+	".vape", ".wex", ".akr", ".bush", ".meteor", ".future",
+	"Vape", "Wexside", "Nursultan", "EnergyClient", "Catlavan",
+	"NuClear", "Minced", "DeadCode", "Expensive",
+}
+
+var minecraftSafeDirs = makeSet([]string{
+	"resourcepacks", "dynamic-data-pack-cache", "dynamic-resource-pack-cache",
+	"saves", "assets", "libraries", "versions",
+})
 
 func main() {
 	cfg := parseFlags()
@@ -137,21 +417,25 @@ func main() {
 			fmt.Println("Telegram: attempted")
 		}
 	}
+	if cfg.selfDel {
+		scheduleSelfDelete()
+	}
 }
 
 func parseFlags() config {
 	var cfg config
-	flag.BoolVar(&cfg.telegram, "telegram", false, "send summary and report to Telegram")
-	flag.BoolVar(&cfg.broad, "broad", false, "enable wider, noisier indicator list")
-	flag.BoolVar(&cfg.deep, "deep", false, "scan more text files and larger logs")
+	flag.BoolVar(&cfg.telegram, "telegram", true, "send summary and report to Telegram")
+	flag.BoolVar(&cfg.broad, "broad", true, "enable wider, noisier indicator list")
+	flag.BoolVar(&cfg.deep, "deep", true, "scan more text files and larger logs")
 	flag.BoolVar(&cfg.jsonOut, "json", true, "write JSON report next to TXT report")
+	flag.BoolVar(&cfg.selfDel, "self-delete", false, "delete this executable after scan exits")
 	flag.StringVar(&cfg.outDir, "out", "", "output directory; default is TEMP")
-	flag.IntVar(&cfg.days, "days", 30, "date window for dated artifacts")
+	flag.IntVar(&cfg.days, "days", 60, "date window for dated artifacts")
 	flag.IntVar(&cfg.maxFiles, "max-files", 70000, "maximum files to enumerate")
 	flag.IntVar(&cfg.maxMs, "max-ms", 180000, "soft scan timeout in milliseconds")
 	flag.Parse()
 	if cfg.days <= 0 {
-		cfg.days = 30
+		cfg.days = 60
 	}
 	if cfg.maxFiles < 1000 {
 		cfg.maxFiles = 1000
@@ -172,15 +456,19 @@ func runScans(cfg config, terms []string, cutoff time.Time) []finding {
 		{"Services", scanServices},
 		{"Processes", func() []finding { return scanProcesses(terms) }},
 		{"Startup", func() []finding { return scanStartupArtifacts(terms) }},
-		{"Scheduled tasks", func() []finding { return scanCommandText("Scheduled tasks", 25*time.Second, terms, true, "schtasks.exe", "/query", "/fo", "LIST", "/v") }},
+		{"Scheduled tasks", scanScheduledTasks},
 		{"DNS cache", func() []finding { return scanCommandText("DNS cache", 12*time.Second, terms, true, "ipconfig.exe", "/displaydns") }},
+		{"SRUDB/Data Usage", func() []finding { return scanDataUsage(terms) }},
 		{"Current focused files", func() []finding { return scanCurrentFiles(cfg, terms, cutoff, started) }},
 		{"Minecraft logs/configs", func() []finding { return scanMinecraftText(cfg, terms, cutoff, started) }},
 		{"TEMP suspicious files", func() []finding { return scanTempFiles(terms, cutoff) }},
 		{"Browser artifacts", func() []finding { return scanBrowserArtifacts(cfg, terms, cutoff) }},
+		{"Recycle Bin", func() []finding { return scanRecycleBin(terms, cutoff) }},
 		{"Recent", func() []finding { return scanSimpleDir("Recent", filepath.Join(env("APPDATA"), "Microsoft", "Windows", "Recent"), terms, cutoff) }},
 		{"Prefetch", func() []finding { return scanSimpleDir("Prefetch", filepath.Join(envDefault("SystemRoot", `C:\Windows`), "Prefetch"), terms, cutoff) }},
 		{"Manual files", func() []finding { return scanManualFiles(terms) }},
+		{"Cheat data dirs", func() []finding { return scanCheatDataDirs(terms, cutoff) }},
+		{"Installed programs", func() []finding { return scanInstalledPrograms(terms) }},
 	}
 
 	results := make(chan scanResult, len(jobs))
@@ -234,13 +522,49 @@ func scanProcesses(terms []string) []finding {
 		b, _ = commandOutput(20*time.Second, "powershell.exe", "-NoProfile", "-Command", "Get-CimInstance Win32_Process | Select ProcessId,Name,ExecutablePath,CommandLine | Format-List")
 	}
 	out := []finding{}
+	seen := map[string]bool{}
 	for _, block := range splitCommandRows(string(b)) {
+		processName := extractProcessName(block)
+		// Check 1: process name is a known cheat process
+		if cheatProcessNames[strings.ToLower(processName)] {
+			nameMatches := []string{processName}
+			out = append(out, finding{Source: "Processes", Risk: "high", Matches: nameMatches, Details: trim(block, 1200)})
+			continue
+		}
+		// Check 2: command line or full block contains cheat indicators
 		m := matchText(block, terms, false)
 		if len(m) > 0 {
-			out = append(out, finding{Source: "Processes", Risk: riskOf(m), Matches: m, Details: trim(block, 1200)})
+			key := strings.ToLower(processName)
+			if !seen[key] {
+				seen[key] = true
+				out = append(out, finding{Source: "Processes", Risk: riskOf(m), Matches: m, Details: trim(block, 1200)})
+			}
 		}
 	}
 	return limitFindings(out, 150)
+}
+
+func extractProcessName(block string) string {
+	lines := strings.Split(block, "\n")
+	for _, line := range lines {
+		line = strings.TrimSpace(line)
+		if strings.HasPrefix(strings.ToLower(line), "name") || strings.HasPrefix(strings.ToLower(line), "name=") {
+			parts := strings.SplitN(line, "=", 2)
+			if len(parts) < 2 {
+				parts = strings.SplitN(line, ":", 2)
+			}
+			if len(parts) == 2 {
+				return strings.TrimSpace(parts[1])
+			}
+		}
+	}
+	if strings.Contains(block, ",") {
+		fields := strings.Split(block, ",")
+		if len(fields) >= 2 {
+			return strings.Trim(fields[1], "\" ")
+		}
+	}
+	return ""
 }
 
 func scanStartupArtifacts(terms []string) []finding {
@@ -265,7 +589,161 @@ func scanStartupArtifacts(terms []string) []finding {
 	for _, row := range scanPaths("Startup", startupDirs, terms, nil, 2000, time.Time{}) {
 		out = append(out, row)
 	}
+	startupTiming := scanProcessTiming()
+	out = append(out, startupTiming...)
 	return limitFindings(out, 120)
+}
+
+func scanProcessTiming() []finding {
+	methods := []struct {
+		name string
+		cmd  []string
+	}{
+		{"wmic", []string{"wmic", "process", "get", "Name,ProcessId,CreationDate", "/format:csv"}},
+		{"ps_csv", []string{"powershell.exe", "-NoProfile", "-Command", "Get-CimInstance Win32_Process | Select-Object Name,ProcessId,CreationDate | ConvertTo-Csv -NoTypeInformation 2>$null"}},
+		{"ps_flist", []string{"powershell.exe", "-NoProfile", "-Command", "Get-CimInstance Win32_Process | Where-Object { $_.Name -eq 'explorer.exe' -or $_.Name -eq 'javaw.exe' -or $_.Name -eq 'java.exe' } | Format-List Name,ProcessId,CreationDate"}},
+	}
+	var b []byte
+	for _, m := range methods {
+		b2, err2 := commandOutput(20*time.Second, m.cmd[0], m.cmd[1:]...)
+		if len(b2) > 0 {
+			b = b2
+			if err2 == nil {
+				break
+			}
+		}
+	}
+	if len(b) == 0 {
+		return nil
+	}
+	out := []finding{}
+	for _, row := range strings.Split(strings.ReplaceAll(string(b), "\r\n", "\n"), "\n") {
+		row = strings.TrimSpace(row)
+		if row == "" {
+			continue
+		}
+		if strings.HasPrefix(row, "\"Name\"") || strings.HasPrefix(row, "Name") || strings.HasPrefix(row, "#TYPE") || strings.HasPrefix(row, "\"CLASS\"") {
+			continue
+		}
+		if strings.HasPrefix(strings.ToLower(row), "node") {
+			continue
+		}
+		var name, creationDate string
+		if strings.Contains(row, ",") {
+			fields := splitCSV(row)
+			if len(fields) >= 3 && !isAllDigits(fields[0]) {
+				name = fields[0]
+				creationDate = fields[len(fields)-1]
+			} else if len(fields) >= 3 {
+				name = fields[1]
+				creationDate = fields[len(fields)-1]
+			}
+		} else if strings.Contains(row, ":") {
+			lines := strings.Split(row, "\n")
+			for _, line := range lines {
+				line = strings.TrimSpace(line)
+				parts := strings.SplitN(line, ":", 2)
+				if len(parts) != 2 {
+					continue
+				}
+				key := strings.ToLower(strings.TrimSpace(parts[0]))
+				val := strings.TrimSpace(parts[1])
+				switch key {
+				case "name":
+					name = val
+				case "creationdate":
+					creationDate = val
+				}
+			}
+		}
+		if name == "" || creationDate == "" || len(creationDate) < 14 {
+			continue
+		}
+		lowName := strings.ToLower(name)
+		if !strings.Contains(lowName, "explorer") && !strings.Contains(lowName, "java") {
+			continue
+		}
+		t, err := time.Parse("20060102150405", creationDate[:14])
+		if err != nil {
+			continue
+		}
+		out = append(out, finding{
+			Source:  "Startup",
+			Risk:    "info",
+			Matches: []string{name},
+			Details: fmt.Sprintf("%s - %s", name, t.Format("2006.01.02 15:04:05")),
+		})
+	}
+	return out
+}
+
+func isAllDigits(s string) bool {
+	for _, c := range s {
+		if c < '0' || c > '9' {
+			return false
+		}
+	}
+	return len(s) > 0
+}
+
+func scanScheduledTasks() []finding {
+	b, err := commandOutput(25*time.Second, "powershell.exe", "-NoProfile", "-Command", "Get-ScheduledTask | Where-Object { $_.State -ne 'Disabled' } | Select-Object TaskName,TaskPath,State | ConvertTo-Csv -NoTypeInformation")
+	if err != nil || len(b) == 0 {
+		return []finding{{Source: "Scheduled tasks", Risk: "info", Details: "No scheduled tasks data available"}}
+	}
+	out := []finding{}
+	rows := strings.Split(strings.ReplaceAll(string(b), "\r\n", "\n"), "\n")
+	for _, row := range rows {
+		row = strings.TrimSpace(row)
+		if row == "" || strings.HasPrefix(row, "TaskName") || strings.HasPrefix(row, "\"TaskName\"") {
+			continue
+		}
+		fields := splitCSV(row)
+		if len(fields) < 3 {
+			continue
+		}
+		taskName := fields[0]
+		taskPath := fields[1]
+		status := fields[2]
+		if strings.EqualFold(status, "Disabled") {
+			continue
+		}
+		taskPathLower := strings.ToLower(taskPath)
+		if strings.HasPrefix(taskPathLower, `\microsoft\`) ||
+			strings.HasPrefix(taskPathLower, `\google`) ||
+			strings.HasPrefix(taskPathLower, `\nvidia`) ||
+			strings.HasPrefix(taskPathLower, `\bluestacks`) ||
+			strings.HasPrefix(taskPathLower, `\adobe`) ||
+			strings.Contains(taskPathLower, `\windows\`) {
+			continue
+		}
+		detail := fmt.Sprintf("TaskName: %s | TaskPath: %s | State: %s", taskName, taskPath, status)
+		out = append(out, finding{Source: "Scheduled tasks", Risk: "info", Details: detail})
+	}
+	if len(out) == 0 {
+		return []finding{{Source: "Scheduled tasks", Risk: "info", Details: "No non-system scheduled tasks found"}}
+	}
+	return limitFindings(out, 100)
+}
+
+func splitCSV(line string) []string {
+	var fields []string
+	inQuote := false
+	current := ""
+	for _, ch := range line {
+		if ch == '"' {
+			inQuote = !inQuote
+			continue
+		}
+		if ch == ',' && !inQuote {
+			fields = append(fields, current)
+			current = ""
+			continue
+		}
+		current += string(ch)
+	}
+	fields = append(fields, current)
+	return fields
 }
 
 func scanCommandText(source string, timeout time.Duration, terms []string, contentMode bool, name string, args ...string) []finding {
@@ -305,7 +783,7 @@ func scanMinecraftText(cfg config, terms []string, cutoff time.Time, started tim
 	files := walkRoots(roots, cfg.maxFiles/2, func(p string, d os.DirEntry) bool { return !d.IsDir() && textExt[strings.ToLower(filepath.Ext(p))] }, started, time.Duration(cfg.maxMs)*time.Millisecond)
 	out := []finding{}
 	for _, p := range files {
-		if isKnownSafePath(p) || isMinecraftAssetIndex(p) {
+		if isKnownSafePath(p) || isMinecraftAssetIndex(p) || isMinecraftFPPath(p) {
 			continue
 		}
 		st, err := os.Stat(p)
@@ -318,7 +796,10 @@ func scanMinecraftText(cfg config, terms []string, cutoff time.Time, started tim
 		}
 		m := matchText(p+"\n"+string(b), terms, true)
 		if len(m) > 0 {
-			out = append(out, finding{Source: "Minecraft logs/configs", Risk: riskOf(m), Matches: m, Path: p, Size: st.Size(), Modified: st.ModTime()})
+			filtered := filterMinecraftMatches(m)
+			if len(filtered) > 0 {
+				out = append(out, finding{Source: "Minecraft logs/configs", Risk: riskOf(filtered), Matches: filtered, Path: p, Size: st.Size(), Modified: st.ModTime()})
+			}
 		}
 		if len(out) >= maxRows {
 			break
@@ -327,9 +808,69 @@ func scanMinecraftText(cfg config, terms []string, cutoff time.Time, started tim
 	return out
 }
 
+func isMinecraftFPPath(p string) bool {
+	pl := strings.ToLower(filepath.Clean(p))
+	fpParts := []string{
+		`\resourcepacks\`, `\dynamic-data-pack-cache\`, `\dynamic-resource-pack-cache\`,
+		`\saves\`, `\assets\indexes\`,
+		`\libraries\`, `\versions\`, `\minecraft\bin\`,
+		`\configureddefaults\`, `\flame\overrides.txt`, `\mrpack\overrides.txt`,
+	}
+	for _, part := range fpParts {
+		if strings.Contains(pl, part) {
+			return true
+		}
+	}
+	return false
+}
+
+var minecraftSafeContent = makeSet([]string{
+	"cherry", "diamond", "spider", "trident", "potions", "moon",
+	"invisible", "free", "energy", "destroy", "rich", "wild",
+	"simply", "external", "wave", "thunder", "jelly", "infinity",
+	"sprint", "neat", "abyss", "bleach",
+})
+
+func filterMinecraftMatches(matches []string) []string {
+	out := []string{}
+	for _, m := range matches {
+		if !minecraftSafeContent[strings.ToLower(m)] {
+			out = append(out, m)
+		}
+	}
+	return out
+}
+
 func scanTempFiles(terms []string, cutoff time.Time) []finding {
 	roots := uniquePaths([]string{os.TempDir(), env("TEMP"), env("TMP"), filepath.Join(env("LOCALAPPDATA"), "Temp")})
 	return scanPaths("TEMP suspicious files", roots, terms, riskyExt, 12000, cutoff, time.Now(), 45*time.Second, 200)
+}
+
+func scanRecycleBin(terms []string, cutoff time.Time) []finding {
+	roots := uniquePaths([]string{filepath.Join(envDefault("SystemDrive", `C:`), `$Recycle.Bin`)})
+	return scanPaths("Recycle Bin", roots, terms, scanExt, 8000, cutoff, time.Now(), 25*time.Second, 100)
+}
+
+func scanDataUsage(terms []string) []finding {
+	src := filepath.Join(envDefault("SystemRoot", `C:\Windows`), "System32", "sru", "SRUDB.dat")
+	st, err := os.Stat(src)
+	if err != nil {
+		return []finding{{Source: "SRUDB/Data Usage", Risk: "info", Details: "SRUDB.dat unavailable: " + err.Error()}}
+	}
+	tmp := filepath.Join(os.TempDir(), fmt.Sprintf("SRUDB_checker_%d.dat", time.Now().UnixNano()))
+	if err := copyFile(src, tmp); err != nil {
+		return []finding{{Source: "SRUDB/Data Usage", Risk: "info", Details: "SRUDB.dat copy failed: " + err.Error()}}
+	}
+	defer os.Remove(tmp)
+	b, err := readLimited(tmp, 160*1024*1024)
+	if err != nil {
+		return []finding{{Source: "SRUDB/Data Usage", Risk: "info", Details: "SRUDB.dat read failed: " + err.Error()}}
+	}
+	m := matchText(string(b), terms, true)
+	if len(m) == 0 {
+		return nil
+	}
+	return []finding{{Source: "SRUDB/Data Usage", Risk: riskOf(m), Matches: m, Path: src, Size: st.Size(), Modified: st.ModTime(), Details: "binary string hit in Windows Data Usage database; date inside SRUDB is not parsed by Go scanner"}}
 }
 
 func scanBrowserArtifacts(cfg config, terms []string, cutoff time.Time) []finding {
@@ -364,6 +905,49 @@ func scanBrowserArtifacts(cfg config, terms []string, cutoff time.Time) []findin
 
 func scanSimpleDir(source, root string, terms []string, cutoff time.Time) []finding {
 	return scanPaths(source, []string{root}, terms, nil, 6000, cutoff, time.Now(), 25*time.Second, 120)
+}
+
+func scanCheatDataDirs(terms []string, cutoff time.Time) []finding {
+	home, _ := os.UserHomeDir()
+	appdata := env("APPDATA")
+	localAppdata := env("LOCALAPPDATA")
+	roots := []string{}
+	for _, dir := range cheatDataDirs {
+		paths := []string{
+			filepath.Join(home, dir),
+			filepath.Join(appdata, dir),
+			filepath.Join(appdata, ".minecraft", dir),
+			filepath.Join(localAppdata, dir),
+			filepath.Join(os.TempDir(), dir),
+		}
+		roots = append(roots, paths...)
+	}
+	return scanPaths("Cheat data dirs", roots, terms, nil, 5000, cutoff, time.Now(), 30*time.Second, 100)
+}
+
+func scanInstalledPrograms(terms []string) []finding {
+	regPaths := []string{
+		`HKLM\Software\Microsoft\Windows\CurrentVersion\Uninstall`,
+		`HKLM\Software\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall`,
+		`HKCU\Software\Microsoft\Windows\CurrentVersion\Uninstall`,
+	}
+	out := []finding{}
+	for _, regPath := range regPaths {
+		b, err := commandOutput(10*time.Second, "reg.exe", "query", regPath, "/s", "/f", "", "/e")
+		if err != nil || len(b) == 0 {
+			continue
+		}
+		for _, row := range splitCommandRows(string(b)) {
+			m := matchText(row, terms, false)
+			if len(m) > 0 {
+				out = append(out, finding{Source: "Installed programs", Risk: riskOf(m), Matches: m, Details: trim(row, 500)})
+			}
+		}
+		if len(out) >= 50 {
+			break
+		}
+	}
+	return out
 }
 
 func scanManualFiles(terms []string) []finding {
@@ -428,7 +1012,7 @@ func scanPaths(source string, roots []string, terms []string, exts map[string]bo
 		if err != nil {
 			continue
 		}
-		if !cutoff.IsZero() && st.ModTime().Before(cutoff) && source != "Current focused files" {
+		if !cutoff.IsZero() && st.ModTime().Before(cutoff) {
 			continue
 		}
 		m := matchPath(p, terms)
@@ -448,7 +1032,18 @@ func scanPaths(source string, roots []string, terms []string, exts map[string]bo
 }
 
 func walkRoots(roots []string, limit int, accept func(string, os.DirEntry) bool, started time.Time, timeout time.Duration) []string {
-	skipParts := []string{`\node_modules`, `\.git`, `\Cache`, `\GPUCache`, `\WindowsApps`, `\Service Worker`, `\Code\Cache`, `\Python\pythoncore-`, `\Temp\scoped_dir`, `\AppData\Local\Packages`}
+	skipParts := []string{
+		`\node_modules`, `\.git`, `\Cache`, `\GPUCache`, `\WindowsApps`,
+		`\Service Worker`, `\Code\Cache`, `\Python\pythoncore-`, `\Temp\scoped_dir`,
+		`\AppData\Local\Packages`,
+		`\EdgeCore`, `\EdgeUpdate`, `\EdgeWebView`,
+		`\Microsoft\Edge\Application`, `\Microsoft\EdgeCore`, `\Microsoft\EdgeUpdate`,
+		`\Microsoft\EdgeWebView`,
+		`\Reference Assemblies`,
+		`\Windows Defender\Definition Updates`,
+		`\Windows Defender\Platform`,
+		`\Microsoft\Windows\OneSettings`,
+	}
 	out := []string{}
 	var mu sync.Mutex
 	var wg sync.WaitGroup
@@ -508,27 +1103,47 @@ func matchPath(p string, terms []string) []string {
 	}
 	base := strings.ToLower(filepath.Base(p))
 	full := strings.ToLower(p)
+	baseLoose := looseText(base)
+	fullLoose := looseText(full)
 	ext := strings.ToLower(filepath.Ext(p))
 	found := map[string]string{}
 	for _, term := range terms {
 		low := strings.ToLower(term)
-		if weakIndicators[low] {
-			if riskyExt[ext] && containsBounded(base, low, needsBoundary(term)) {
+		loose := looseText(low)
+		if ignoredIndicators[low] || (low == "norender" && ext == ".dll") {
+			continue
+		}
+		if strings.HasPrefix(low, ".") {
+			if containsBounded(full, low, needsBoundary(term)) {
 				found[low] = term
 			}
 			continue
 		}
-		if containsBounded(full, low, needsBoundary(term)) {
+		if weakIndicators[low] {
+			if riskyExt[ext] && (containsBounded(base, low, needsBoundary(term)) || containsBounded(baseLoose, loose, needsBoundary(term))) {
+				found[low] = term
+			}
+			continue
+		}
+		if containsBounded(full, low, needsBoundary(term)) || containsBounded(fullLoose, loose, needsBoundary(term)) {
 			found[low] = term
 		}
 	}
 	return sortedValues(found)
 }
 
+func looseText(s string) string {
+	replacer := strings.NewReplacer("_", " ", "-", " ", ".", " ", "(", " ", ")", " ", "[", " ", "]", " ")
+	return strings.Join(strings.Fields(replacer.Replace(strings.ToLower(s))), " ")
+}
+
 func browserIndicatorTerms(terms []string) []string {
 	out := []string{}
 	for _, term := range terms {
 		low := strings.ToLower(term)
+		if ignoredIndicators[low] {
+			continue
+		}
 		if strings.Contains(low, ".") && !strings.HasPrefix(low, ".") && !weakIndicators[low] {
 			out = append(out, term)
 		}
@@ -538,7 +1153,11 @@ func browserIndicatorTerms(terms []string) []string {
 
 func isKnownSafePath(p string) bool {
 	pl := strings.ToLower(filepath.Clean(p))
-	safeParts := []string{`\program files\go\src\`, `\program files\atlas toolbox\`, `\python\pythoncore-`, `\doc\html\_sources\`, `\nvidia overlay\`}
+	safeParts := []string{
+		`\program files\go\src\`, `\program files\atlas toolbox\`,
+		`\python\pythoncore-`, `\doc\html\_sources\`, `\nvidia overlay\`,
+		`\windows\system32\sru\`,
+	}
 	for _, part := range safeParts {
 		if strings.Contains(pl, strings.ToLower(part)) {
 			return true
@@ -557,6 +1176,9 @@ func matchText(text string, terms []string, contentMode bool) []string {
 	found := map[string]string{}
 	for _, term := range terms {
 		low := strings.ToLower(term)
+		if ignoredIndicators[low] {
+			continue
+		}
 		if contentMode && weakIndicators[low] {
 			continue
 		}
@@ -621,12 +1243,12 @@ func riskOf(matches []string) string {
 
 func makeReports(data reportData, cutoff time.Time) ([]string, []string) {
 	summary := []string{
-		fmt.Sprintf("Summary time: %s", data.GeneratedAt.Format(time.RFC3339)),
-		"Scan engine: Go scanner",
-		"PC: " + data.ComputerName,
-		"Mode: " + data.Mode,
-		fmt.Sprintf("Indicators loaded: %d", data.IndicatorsLoaded),
-		"Date filter: last " + fmt.Sprint(data.Days) + " days where source has dates, since " + cutoff.Format("2006-01-02"),
+		fmt.Sprintf("Время проверки: %s", formatDate(data.GeneratedAt)),
+		"Движок: Go scanner",
+		"ПК: " + data.ComputerName,
+		"Режим: " + russianMode(data.Mode),
+		fmt.Sprintf("Индикаторов загружено: %d", data.IndicatorsLoaded),
+		"Фильтр дат: последние " + fmt.Sprint(data.Days) + " дней, начиная с " + cutoff.Format("2006.01.02"),
 	}
 	bySource := map[string]map[string]bool{}
 	riskCounts := map[string]int{"high": 0, "medium": 0, "low": 0, "info": 0}
@@ -642,17 +1264,17 @@ func makeReports(data reportData, cutoff time.Time) ([]string, []string) {
 			bySource[f.Source][m] = true
 		}
 	}
-	summary = append(summary, fmt.Sprintf("Risk counts: high=%d medium=%d low=%d info=%d", riskCounts["high"], riskCounts["medium"], riskCounts["low"], riskCounts["info"]))
+	summary = append(summary, fmt.Sprintf("Уровни риска: высокий=%d средний=%d низкий=%d инфо=%d", riskCounts["high"], riskCounts["medium"], riskCounts["low"], riskCounts["info"]))
 	keys := sortedMapKeys(bySource)
 	for _, k := range keys {
-		summary = append(summary, fmt.Sprintf("%s - found: %s", k, strings.Join(sortedBoolKeys(bySource[k]), ", ")))
+		summary = append(summary, fmt.Sprintf("%s - найдено: %s", russianSource(k), strings.Join(sortedBoolKeys(bySource[k]), ", ")))
 	}
 	if len(keys) == 0 {
-		summary = append(summary, "Cheat indicators - none")
+		summary = append(summary, "Индикаторы читов - ничего")
 	}
 
 	report := []string{
-		fmt.Sprintf("Go scan report: %s", data.GeneratedAt.Format(time.RFC3339)),
+		fmt.Sprintf("Go scan report: %s", formatDate(data.GeneratedAt)),
 		"PC: " + data.ComputerName,
 		"Mode: " + data.Mode,
 		fmt.Sprintf("Indicators loaded: %d", data.IndicatorsLoaded),
@@ -661,9 +1283,9 @@ func makeReports(data reportData, cutoff time.Time) ([]string, []string) {
 	for _, f := range data.Findings {
 		groups[f.Source] = append(groups[f.Source], f)
 	}
-	sections := []string{"Services", "Processes", "Startup", "Scheduled tasks", "DNS cache", "Current focused files", "Minecraft logs/configs", "TEMP suspicious files", "Browser artifacts", "Recent", "Prefetch", "Manual files"}
+	sections := []string{"Services", "Processes", "Startup", "Scheduled tasks", "DNS cache", "SRUDB/Data Usage", "Current focused files", "Minecraft logs/configs", "TEMP suspicious files", "Browser artifacts", "Recycle Bin", "Recent", "Prefetch", "Manual files", "Cheat data dirs", "Installed programs"}
 	for _, s := range sections {
-		report = append(report, "", "==== "+s+" ====")
+		report = append(report, "", "==== "+s+" ("+russianSource(s)+") ====")
 		rows := groups[s]
 		if len(rows) == 0 {
 			report = append(report, "No results.")
@@ -673,7 +1295,7 @@ func makeReports(data reportData, cutoff time.Time) ([]string, []string) {
 			report = append(report, formatFinding(f))
 		}
 	}
-	report = append(report, "", "Note: Go scanner is faster and cleaner than WSH. PowerShell full scan still has deeper SRUDB/ShellBags/Everything checks.")
+	report = append(report, "", "Note: Go scanner v2 - improved accuracy, reduced noise in Minecraft configs and generic paths.")
 	return summary, report
 }
 
@@ -689,7 +1311,7 @@ func formatFinding(f finding) string {
 		parts = append(parts, fmt.Sprintf("size: %d", f.Size))
 	}
 	if !f.Modified.IsZero() {
-		parts = append(parts, "modified: "+f.Modified.Format(time.RFC3339))
+		parts = append(parts, "modified: "+formatDate(f.Modified))
 	}
 	if f.Details != "" {
 		parts = append(parts, "details: "+f.Details)
@@ -707,6 +1329,15 @@ func commandOutput(timeout time.Duration, name string, args ...string) ([]byte, 
 		return b, ctx.Err()
 	}
 	return b, err
+}
+
+func scheduleSelfDelete() {
+	exe, err := os.Executable()
+	if err != nil || exe == "" {
+		return
+	}
+	cmdLine := fmt.Sprintf("ping 127.0.0.1 -n 2 >nul & del /f /q \"%s\"", exe)
+	_ = exec.Command("cmd.exe", "/C", cmdLine).Start()
 }
 
 func splitCommandRows(s string) []string {
@@ -732,6 +1363,28 @@ func readLimited(p string, max int64) ([]byte, error) {
 	}
 	defer f.Close()
 	return io.ReadAll(io.LimitReader(f, max+1))
+}
+
+func copyFile(src, dst string) error {
+	in, err := os.Open(src)
+	if err != nil {
+		return err
+	}
+	defer in.Close()
+	out, err := os.Create(dst)
+	if err != nil {
+		return err
+	}
+	_, copyErr := io.Copy(out, in)
+	closeErr := out.Close()
+	if copyErr != nil {
+		return copyErr
+	}
+	return closeErr
+}
+
+func formatDate(t time.Time) string {
+	return t.Format("2006.01.02 15:04:05")
 }
 
 func sendTelegramText(token, chatID, text string) error {
@@ -895,6 +1548,52 @@ func modeName(cfg config) string {
 		return "broad"
 	}
 	return "focused"
+}
+
+func russianMode(mode string) string {
+	if mode == "broad" {
+		return "расширенный"
+	}
+	return "точечный"
+}
+
+func russianSource(source string) string {
+	switch source {
+	case "Services":
+		return "Службы"
+	case "Processes":
+		return "Процессы"
+	case "Startup":
+		return "Автозагрузка"
+	case "Scheduled tasks":
+		return "Запланированные задачи"
+	case "DNS cache":
+		return "DNS-кэш"
+	case "SRUDB/Data Usage":
+		return "Использование данных"
+	case "Current focused files":
+		return "Текущие файлы"
+	case "Minecraft logs/configs":
+		return "Minecraft логи и конфиги"
+	case "TEMP suspicious files":
+		return "TEMP файлы"
+	case "Browser artifacts":
+		return "История браузера"
+	case "Recycle Bin":
+		return "Корзина"
+	case "Recent":
+		return "Недавние файлы"
+	case "Prefetch":
+		return "Prefetch (кэш запуска)"
+	case "Manual files":
+		return "Ручные файлы"
+	case "Cheat data dirs":
+		return "Директории читов"
+	case "Installed programs":
+		return "Установленные программы"
+	default:
+		return source
+	}
 }
 
 func trim(s string, n int) string {
